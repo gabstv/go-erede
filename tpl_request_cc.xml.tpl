@@ -19,7 +19,7 @@
 			<amount currency="BRL">{{.Amount}}</amount>
 			{{if .TipoParcelado}}
 			<Instalments>
-				<instalment_type>{{.TipoParcelado}}</instalment_type><instalment_number>{{.NumParcelas}}</instalment_number>
+				<type>{{.TipoParcelado}}</type><number>{{.NumParcelas}}</number>
 			</Instalments>
 			{{end}}
 			{{if .SkipRisk}}{{else}}

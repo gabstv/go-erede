@@ -175,7 +175,8 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	vals["CobrancaZIP"] = t.BillingAddress.ZIP
 
 	if t.Installments > 1 {
-		vals["TipoParcelado"] = "1"
+		//TODO: support interest
+		vals["TipoParcelado"] = "zero_interest"
 		vals["NumParcelas"] = t.Installments
 	}
 
