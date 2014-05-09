@@ -92,7 +92,9 @@ type TransactionProduct struct {
 
 func (t *Transaction) AddProduct(id, description, category string, quantity int, moneyAmount float64) *TransactionProduct {
 	t.skipLineItems = false
-	return &TransactionProduct{id, description, category, quantity, moneyAmount, "low"}
+	i0 := TransactionProduct{id, description, category, quantity, moneyAmount, "low"}
+	t.Products = append(t.Products, i0)
+	return &t.Products[len(t.Products)-1]
 }
 
 func (t *Transaction) SetVendorLocation(loc string) *Transaction {
