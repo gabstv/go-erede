@@ -24,6 +24,7 @@ const tpl_request_cc = `<Request version="2">
 				<instalment_type>{{.TipoParcelado}}</instalment_type><instalment_number>{{.NumParcelas}}</instalment_number>
 			</Instalments>
 			{{end}}
+			{{if .SkipRisk}}{{else}}
 			<Risk>
 				<Action service="1">
 					<MerchantConfiguration>
@@ -32,17 +33,17 @@ const tpl_request_cc = `<Request version="2">
 					</MerchantConfiguration>
 					<CustomerDetails>
 						<RiskDetails>
-							<user_id>{{.VuserId}}</user_id>
-							<email_address>{{Vmail}}</email_address>
-							<ip_address>{{.VIP}}</ip_address>
+							{{if .VuserId}}<user_id>{{.VuserId}}</user_id>{{end}}
+							{{if .Vmail}}<email_address>{{.Vmail}}</email_address>{{end}}
+							{{if .VIP}}<ip_address>{{.VIP}}</ip_address>{{end}}
 						</RiskDetails>
 						<PersonalDetails>
-							<telephone>{{.PFone1}}</telephone>
-							<telephone_2>{{.PFone2}}</telephone_2>
-							<date_of_birth >{{.PDateBirth}}</date_of_birth >
-							<id_number>{{.PIDNumber}}</id_number>
-							<id_type>{{.PIDType}}</id_type>
-							<first_name>[[.PFName]]</first_name>
+							{{if .PFone1}}<telephone>{{.PFone1}}</telephone>{{end}}
+							{{if .PFone2}}<telephone_2>{{.PFone2}}</telephone_2>{{end}}
+							{{if .PDateBirth}}<date_of_birth >{{.PDateBirth}}</date_of_birth>{{end}}
+							{{if .PIDNumber}}<id_number>{{.PIDNumber}}</id_number>
+							<id_type>{{.PIDType}}</id_type>{{end}}
+							{{if .PFName}}<first_name>{{.PFName}}</first_name>{{end}}
 							{{if .PLName}}
 							<surname>{{.PLName}}</surname>
 							{{end}}
@@ -50,6 +51,7 @@ const tpl_request_cc = `<Request version="2">
 						<PaymentDetails>
 							<payment_method>CC</payment_method>
 						</PaymentDetails>
+						{{if .SkipAddressDetails}}{{else}}
 						<AddressDetails>
 							<address_line1>{{.Address1}}</address_line1>
 							<address_line2>{{.Address2}}</address_line2>
@@ -58,6 +60,8 @@ const tpl_request_cc = `<Request version="2">
 							<country>{{.AddressCountry}}</country>
 							<zip_code>{{.AddressZIP}}</zip_code>
 						</AddressDetails>
+						{{end}}
+						{{if .SkipShippingDetails}}{{else}}
 						<ShippingDetails>
 							<delivery_date>{{.DeliveryDate}}</delivery_date>
 							<delivery_method>{{.DeliveryMethod}}</delivery_method>
@@ -66,17 +70,23 @@ const tpl_request_cc = `<Request version="2">
 							<city>{{.DeliveryCity}}</city>
 							<state_province>{{.DeliveryState}}</state_province>
 							<country>{{.DeliveryCountry}}</country>
-							<zip_code>{{.DeliveryZIP}}</zip_code></ShippingDetails>
-							<OrderDetails>
-								<BillingDetails>
-									<address_line1>{{.Cobranca1}}</address_line1>
-									<address_line2>{{.Cobranca2}}</address_line2>
-									<city>{{.CobrancaCity}}</city>
-									<state_province>{{.CobrancaState}}</state_province>
-									<country>{{.CobrancaCountry}}</country>
-									<zip_code>{{.CobrancaZIP}}</zip_code>
-								</BillingDetails>
-								<LineItems>
+							<zip_code>{{.DeliveryZIP}}</zip_code>
+						</ShippingDetails>
+						{{end}}
+						{{if .SkipOrderDetails}}{{else}}
+						<OrderDetails>
+							{{if .SkipBillingDetails}}{{else}}
+							<BillingDetails>
+								<address_line1>{{.Cobranca1}}</address_line1>
+								<address_line2>{{.Cobranca2}}</address_line2>
+								<city>{{.CobrancaCity}}</city>
+								<state_province>{{.CobrancaState}}</state_province>
+								<country>{{.CobrancaCountry}}</country>
+								<zip_code>{{.CobrancaZIP}}</zip_code>
+							</BillingDetails>
+							{{end}}
+							{{if .SkipLineItems}}{{else}}
+							<LineItems>
 								{{with .OrderItems}}
 								{{range .}}
 									<Item>
@@ -90,10 +100,13 @@ const tpl_request_cc = `<Request version="2">
 								{{end}}
 								{{end}}
 							</LineItems>
+							{{end}}
 						</OrderDetails>
+						{{end}}
 					</CustomerDetails>
 				</Action>
 			</Risk>
+			{{end}}
 		</TxnDetails>
 	</Transaction>
 	{{if .ShowUserAgent}}
