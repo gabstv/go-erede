@@ -126,39 +126,39 @@ func GetGenRespDescription(code int) string {
 	case 1:
 		return "Sucesso."
 	case 2:
-		return "A comunicação foi interrompida"
+		return "A comunicação foi interrompida"
 	case 3:
-		return "Ocorreu um timeout enquanto os detalhes da transação eram lidos"
+		return "Ocorreu um timeout enquanto os detalhes da transação eram lidos"
 	case 5:
-		return "Um campo foi especificado duas vezes. Foram enviados dados excessivos ou inválidos, um fulfill de pré-autorização falhou ou um campo foi omitido. O argumento oferecerá uma melhor indicação do que exatamente deu errado"
+		return "Um campo foi especificado duas vezes. Foram enviados dados excessivos ou inválidos, um fulfill de pré-autorização falhou ou um campo foi omitido. O argumento oferecerá uma melhor indicação do que exatamente deu errado"
 	case 6:
-		return "Erro no link de comunicação; reenvie"
+		return "Erro no link de comunicação; reenvie"
 	case 9:
-		return "A moeda especificada não existe"
+		return "A moeda especificada não existe"
 	case 10:
-		return "O vTID ou senha são incorretos"
+		return "O vTID ou senha são incorretos"
 	case 12:
-		return "O código de autorização fornecido é inválido"
+		return "O código de autorização fornecido é inválido"
 	case 13:
-		return "Não foi inserido um tipo de transação"
+		return "Não foi inserido um tipo de transação"
 	case 14:
-		return "Os detalhes da transação não foram enviados ao nosso banco de dados"
+		return "Os detalhes da transação não foram enviados ao nosso banco de dados"
 	case 15:
-		return "Foi especificado um tipo de transação inválido"
+		return "Foi especificado um tipo de transação inválido"
 	case 19:
-		return "Houve uma tentativa de fulfill de uma transação que não pode ser confirmada ou que já foi confirmada"
+		return "Houve uma tentativa de fulfill de uma transação que não pode ser confirmada ou que já foi confirmada"
 	case 20:
-		return "Já foi enviada uma transação bem-sucedida que utiliza este vTID e número de referência"
+		return "Já foi enviada uma transação bem-sucedida que utiliza este vTID e número de referência"
 	case 21:
-		return "Este terminal não aceita transações para este tipo de cartão"
+		return "Este terminal não aceita transações para este tipo de cartão"
 	case 22:
-		return "Os números de referência devem ter 16 dígitos para transações de fulfill, ou de 6 a 30 dígitos para todas as outras"
+		return "Os números de referência devem ter 16 dígitos para transações de fulfill, ou de 6 a 30 dígitos para todas as outras"
 	case 23:
 		return "Expiry date do cartão inválido."
 	case 24:
-		return "A data de validade fornecida é anterior à data atual"
+		return "A data de validade fornecida é anterior à data atual"
 	case 25, 26:
-		return "Número do cartão inválido"
+		return "Número do cartão inválido"
 	}
 	return ""
 }
