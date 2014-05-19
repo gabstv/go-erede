@@ -10,14 +10,36 @@ import (
 )
 
 var (
-	User     string
-	Password string
-	URL      = "https://scommerce.redecard.com.br/Beta/wsTransaction"
+	User        string
+	Password    string
+	Environment = 0
 )
 
 const (
 	OrderTypeCredit = "credit"
+	URLDEV          = "https://scommerce.redecard.com.br/Beta/wsTransaction"
+	URLPROD         = "https://ecommerce.userede.com.br/Transaction/wsTransaction"
 )
+
+const (
+	DevelopmentEnv = iota
+	ProductionEnv
+)
+
+func SetProductionEnv() {
+	Environment = ProductionEnv
+}
+
+func SetDevelopmentEnv() {
+	Environment = DevelopmentEnv
+}
+
+func URL() string {
+	if Environment == ProductionEnv {
+		return URLPROD
+	}
+	return URLDEV
+}
 
 type Transaction struct {
 	CardNumber          string
@@ -209,7 +231,7 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	var buffer bytes.Buffer
 	tpl.Execute(&buffer, vals)
 	fmt.Println(buffer.String())
-	resp, err := http.Post(URL, "application/xml", &buffer)
+	resp, err := http.Post(URL(), "application/xml", &buffer)
 	if err != nil {
 		return nil, err
 	}
