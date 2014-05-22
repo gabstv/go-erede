@@ -12,7 +12,7 @@ import (
 var (
 	User        string
 	Password    string
-	Environment = 0
+	Environment = 1
 )
 
 const (
@@ -22,8 +22,8 @@ const (
 )
 
 const (
-	DevelopmentEnv = iota
-	ProductionEnv
+	DevelopmentEnv = 0
+	ProductionEnv  = 1
 )
 
 func SetProductionEnv() {
