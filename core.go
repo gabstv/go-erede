@@ -232,6 +232,7 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	tpl = template.Must(tpl.Parse(tpl_request_cc))
 	var buffer bytes.Buffer
 	tpl.Execute(&buffer, vals)
+	log.Println(URL())
 	log.Println(buffer.String())
 	resp, err := http.Post(URL(), "application/xml", &buffer)
 	if err != nil {
