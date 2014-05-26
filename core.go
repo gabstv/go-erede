@@ -160,7 +160,7 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	vals["ExpiryDate"] = t.CardExpiryDate.String()
 	vals["CCVC2"] = t.CVC2
 	vals["TipoTransacao"] = t.OrderType
-	vals["Method"] = "pre"
+	vals["Method"] = "auth" // pre ou auth // mostra se é pré autorização ou não!
 	vals["MReference"] = t.OrderID
 	vals["Amount"] = fmt.Sprintf("%v", t.OrderMoneyAmount)
 	//
