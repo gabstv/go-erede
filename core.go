@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"text/template"
 )
@@ -13,6 +14,7 @@ var (
 	User        string
 	Password    string
 	Environment = 1
+	Verbose     = false
 )
 
 const (
@@ -230,7 +232,7 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	tpl = template.Must(tpl.Parse(tpl_request_cc))
 	var buffer bytes.Buffer
 	tpl.Execute(&buffer, vals)
-	fmt.Println(buffer.String())
+	log.Println(buffer.String())
 	resp, err := http.Post(URL(), "application/xml", &buffer)
 	if err != nil {
 		return nil, err
@@ -239,6 +241,9 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	buffer.Truncate(0)
 	defer resp.Body.Close()
 	io.Copy(&buffer, resp.Body)
+	if Verbose {
+		log.Println(buffer.String())
+	}
 	err = xml.Unmarshal(buffer.Bytes(), tr)
 	return tr, err
 }
