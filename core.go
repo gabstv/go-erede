@@ -146,6 +146,37 @@ func (t *Transaction) SetSkipBillingDetails(val bool) *Transaction {
 	return t
 }
 
+func FulFillTxn(gatewayReference, authcode string) string {
+	vals := make(map[string]interface{}, 0)
+	vals["User"] = User
+	vals["Password"] = Password
+	vals["GatewayReference"] = gatewayReference
+	vals["AuthCode"] = authcode
+
+	tpl := template.New("xml")
+	tpl = template.Must(tpl.Parse(tpl_fulfill))
+	var buffer bytes.Buffer
+	tpl.Execute(&buffer, vals)
+	log.Println(URL())
+	log.Println(buffer.String())
+	resp, err := http.Post(URL(), "application/xml", &buffer)
+	if err != nil {
+		return err.Error()
+		//return nil, err
+	}
+	//tr := &TransactionResponse{}
+	buffer.Truncate(0)
+	defer resp.Body.Close()
+	io.Copy(&buffer, resp.Body)
+	if Verbose {
+		log.Println(buffer.String())
+	}
+
+	return buffer.String()
+	//err = xml.Unmarshal(buffer.Bytes(), tr)
+	//return tr, err
+}
+
 func (t *Transaction) Submit() (*TransactionResponse, error) {
 	if t.skipLineItems && t.skipBillingDetails {
 		t.skipOrderDetails = true
