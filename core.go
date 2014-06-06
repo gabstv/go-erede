@@ -266,10 +266,12 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 	return buffer
 }
 
-func (t *Transaction) Submit() (*TransactionResponse, error) {
+func (t *Transaction) Submit(xmlw ...io.Writer) (*TransactionResponse, error) {
 	buffer := t.GetXML()
-	log.Println(URL())
-	log.Println(buffer.String())
+	if Verbose {
+		log.Println(URL())
+		log.Println(buffer.String())
+	}
 	resp, err := http.Post(URL(), "application/xml", buffer)
 	if err != nil {
 		return nil, err
@@ -278,10 +280,14 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	buffer.Truncate(0)
 	defer resp.Body.Close()
 	io.Copy(buffer, resp.Body)
+	bs := buffer.Bytes()
 	if Verbose {
-		log.Println(buffer.String())
+		log.Println(string(bs))
 	}
-	err = xml.Unmarshal(buffer.Bytes(), tr)
+	if len(xmlw) > 0 {
+		xmlw[0].Write(bs)
+	}
+	err = xml.Unmarshal(bs, tr)
 	return tr, err
 }
 
