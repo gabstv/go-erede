@@ -177,7 +177,7 @@ func FulFillTxn(gatewayReference, authcode string) string {
 	//return tr, err
 }
 
-func (t *Transaction) Submit() (*TransactionResponse, error) {
+func (t *Transaction) GetXML() *bytes.Buffer {
 	if t.skipLineItems && t.skipBillingDetails {
 		t.skipOrderDetails = true
 	} else {
@@ -261,18 +261,23 @@ func (t *Transaction) Submit() (*TransactionResponse, error) {
 	// </Transaction>
 	tpl := template.New("xml")
 	tpl = template.Must(tpl.Parse(tpl_request_cc))
-	var buffer bytes.Buffer
-	tpl.Execute(&buffer, vals)
+	buffer := new(bytes.Buffer)
+	tpl.Execute(buffer, vals)
+	return buffer
+}
+
+func (t *Transaction) Submit() (*TransactionResponse, error) {
+	buffer := t.GetXML()
 	log.Println(URL())
 	log.Println(buffer.String())
-	resp, err := http.Post(URL(), "application/xml", &buffer)
+	resp, err := http.Post(URL(), "application/xml", buffer)
 	if err != nil {
 		return nil, err
 	}
 	tr := &TransactionResponse{}
 	buffer.Truncate(0)
 	defer resp.Body.Close()
-	io.Copy(&buffer, resp.Body)
+	io.Copy(buffer, resp.Body)
 	if Verbose {
 		log.Println(buffer.String())
 	}
