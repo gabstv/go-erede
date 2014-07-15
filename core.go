@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 )
 
 var (
@@ -55,13 +56,32 @@ type Transaction struct {
 	BillingAddress      TransactionAddress
 	Products            []TransactionProduct
 	Buyer               TransactionBuyer
+	ThreeDSecureData    ThreeDSecure
 	skipRisk            bool
+	threedSecure        bool
 	skipAddressDetails  bool
 	skipShippingDetails bool
 	skipBillingDetails  bool
 	skipOrderDetails    bool
 	skipLineItems       bool
 	location            string
+}
+
+type ThreeDSecure struct {
+	MobileNumber     string
+	MerchantURL      string
+	PurchaseDesc     string
+	PurchaseDatetime string
+	Browser          ThreeDSBrowser
+}
+
+func (t *ThreeDSecure) SetDatetime(t0 time.Time) {
+	t.PurchaseDatetime = fmt.Sprintf("%04d%02d%02d %02d:%02d:%02d", t0.Year(), int(t0.Month()), t0.Day(), t0.Hour(), t0.Minute(), t0.Second())
+}
+
+type ThreeDSBrowser struct {
+	DeviceCategory int
+	UserAgent      string
 }
 
 type CardExpDate struct {
@@ -143,6 +163,11 @@ func (t *Transaction) SetSkipShippingDetails(val bool) *Transaction {
 
 func (t *Transaction) SetSkipBillingDetails(val bool) *Transaction {
 	t.skipBillingDetails = val
+	return t
+}
+
+func (t *Transaction) SetUseThreeDSecure(val bool) *Transaction {
+	t.threedSecure = val
 	return t
 }
 
@@ -257,6 +282,9 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 	vals["SkipLineItems"] = t.skipLineItems
 	vals["SkipOrderDetails"] = t.skipOrderDetails
 	vals["SkipShippingDetails"] = t.skipShippingDetails
+
+	vals["UseThreeDSecure"] = t.threedSecure
+	vals["ThreeDSecure"] = t.ThreeDSecureData
 
 	// </Transaction>
 	tpl := template.New("xml")

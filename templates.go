@@ -107,6 +107,20 @@ const tpl_request_cc = `<Request version="2">
 				</Action>
 			</Risk>
 			{{end}}
+			{{if .UseThreeDSecure}}
+			<ThreeDSecure>
+				<verify>yes</verify>
+				<mobile_number>{{.ThreeDSecure.MobileNumber}}</mobile_number>
+				<merchant_url>{{.ThreeDSecure.MerchantURL}}</merchant_url>
+				<purchase_desc>{{.ThreeDSecure.PurchaseDesc}}</purchase_desc>
+				<purchase_datetime>{{.ThreeDSecure.PurchaseDatetime}}</purchase_datetime>
+				<Browser>
+					<device_category>{{.ThreeDSecure.Browser.DeviceCategory}}</device_category>
+					<accept_headers>*/*</accept_headers>
+					<user_agent>{{.ThreeDSecure.Browser.UserAgent}}</user_agent>
+				</Browser>
+			</ThreeDSecure>
+			{{end}}
 		</TxnDetails>
 	</Transaction>
 	{{if .ShowUserAgent}}
