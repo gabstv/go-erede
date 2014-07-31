@@ -56,6 +56,7 @@ type Transaction struct {
 	BillingAddress      TransactionAddress
 	Products            []TransactionProduct
 	Buyer               TransactionBuyer
+	DebitInfo           TransactionDebitInfo
 	ThreeDSecureData    ThreeDSecure
 	skipRisk            bool
 	threedSecure        bool
@@ -65,6 +66,12 @@ type Transaction struct {
 	skipOrderDetails    bool
 	skipLineItems       bool
 	location            string
+}
+
+type TransactionDebitInfo struct {
+	DateTime    TransactionDateTime
+	Description string
+	URL         string
 }
 
 type ThreeDSecure struct {
@@ -100,6 +107,33 @@ type TransactionBuyer struct {
 	Name    string
 	Surname string
 	Address TransactionAddress
+}
+
+func DTNow() TransactionDateTime {
+	now := time.Now()
+	v := TransactionDateTime{}
+	v.Date.Year = fmt.Sprintf("%04d", now.Year())
+	v.Date.Month = fmt.Sprintf("%02d", int(now.Month()))
+	v.Date.Day = fmt.Sprintf("%02d", now.Day())
+	v.Time.Hour = fmt.Sprintf("%02d", now.Hour())
+	v.Time.Minute = fmt.Sprintf("%02d", now.Minute())
+	v.Time.Second = fmt.Sprintf("%02d", now.Hour())
+	return v
+}
+
+func (dt *TransactionDateTime) Sprint() string {
+	return fmt.Sprintf("%s%s%s %s:%s:%s", dt.Date.Year, dt.Date.Month, dt.Date.Day, dt.Time.Hour, dt.Time.Minute, dt.Time.Second)
+}
+
+type TransactionDateTime struct {
+	Date TransactionDate
+	Time TransactionTime
+}
+
+type TransactionTime struct {
+	Hour   string
+	Minute string
+	Second string
 }
 
 type TransactionDate struct {
@@ -288,7 +322,20 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 
 	// </Transaction>
 	tpl := template.New("xml")
-	tpl = template.Must(tpl.Parse(tpl_request_cc))
+	if t.OrderType == "debit" {
+		vals["ThreeDSecure"] = struct {
+			MerchantURL      string
+			PurchaseDesc     string
+			PurchaseDatetime string
+		}{
+			t.DebitInfo.URL,
+			t.DebitInfo.Description,
+			t.DebitInfo.DateTime.Sprint(),
+		}
+		tpl = template.Must(tpl.Parse(tpl_request_dc))
+	} else {
+		tpl = template.Must(tpl.Parse(tpl_request_cc))
+	}
 	buffer := new(bytes.Buffer)
 	tpl.Execute(buffer, vals)
 	return buffer
@@ -297,6 +344,7 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 func (t *Transaction) Submit(xmlw ...io.Writer) (*TransactionResponse, error) {
 	buffer := t.GetXML()
 	if Verbose {
+		log.Println("XML TO SUBMIT")
 		log.Println(URL())
 		log.Println(buffer.String())
 	}

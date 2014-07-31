@@ -49,20 +49,26 @@ const (
 )
 
 type TransactionResponse struct {
-	XMLName         xml.Name      `xml:"Response"`
-	Card            TrRespCard    `xml:"Card"`
-	CardTxn         TrRespCardTxn `xml:"CardTxn"`
-	Acquirer        string        `xml:"acquirer"`
-	AuthHostRef     int           `xml:"auth_host_reference"`
-	GatewayRef      string        `xml:"gateway_reference"`
-	ExtendedRespMsg string        `xml:"extended_response_message"`
-	ExtendedStatus  string        `xml:"extended_status"`
-	MerchantRef     string        `xml:"merchant_reference"`
-	MID             string        `xml:"mid"`
-	Mode            string        `xml:"mode"`
-	Reason          string        `xml:"reason"`
-	Status          int           `xml:"status"`
-	Time            int64         `xml:"time"`
+	XMLName         xml.Name           `xml:"Response"`
+	Card            TrRespCard         `xml:"Card"`
+	CardTxn         TrRespCardTxn      `xml:"CardTxn"`
+	ThreeDSecure    TrRespThreeDSecure `xml:"ThreeDSecure"`
+	Acquirer        string             `xml:"acquirer"`
+	AuthHostRef     int                `xml:"auth_host_reference"`
+	GatewayRef      string             `xml:"gateway_reference"`
+	ExtendedRespMsg string             `xml:"extended_response_message"`
+	ExtendedStatus  string             `xml:"extended_status"`
+	MerchantRef     string             `xml:"merchant_reference"`
+	MID             string             `xml:"mid"`
+	Mode            string             `xml:"mode"`
+	Reason          string             `xml:"reason"`
+	Status          int                `xml:"status"`
+	Time            int64              `xml:"time"`
+}
+
+type TrRespThreeDSecure struct {
+	AcsURL       string `xml:"acs_url"`
+	PareqMessage string `xml:"pareq_message"`
 }
 
 type TrRespCard struct {
