@@ -66,9 +66,14 @@ type TransactionResponse struct {
 	Time            int64              `xml:"time"`
 }
 
+//TODO: CHECK xid, aav, caavAlgorithm, eci
 type TrRespThreeDSecure struct {
-	AcsURL       string `xml:"acs_url"`
-	PareqMessage string `xml:"pareq_message"`
+	AcsURL        string `xml:"acs_url"`
+	PareqMessage  string `xml:"pareq_message"`
+	XID           string `xml:"xid"`
+	AAV           string `xml:"aav"`
+	CAVVAlgorithm string `xml:"cavvAlgorithm"`
+	ECI           string `xml:"eci"`
 }
 
 type TrRespCard struct {

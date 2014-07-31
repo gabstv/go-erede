@@ -236,6 +236,40 @@ func FulFillTxn(gatewayReference, authcode string) string {
 	//return tr, err
 }
 
+func ConfirmDebitTxn(gatewayRef, debitPaRes string) (*TransactionResponse, error) {
+	tpl := new(bytes.Buffer)
+	tpl.WriteString(`<Request version="2>`)
+	tpl.WriteString("<Authentication><AcquirerCode><rdcd_pv>")
+	tpl.WriteString(User)
+	tpl.WriteString("</rdcd_pv></AcquirerCode><password>")
+	tpl.WriteString(Password)
+	tpl.WriteString("</password></Authentication>")
+	tpl.WriteString("<Transaction><HistoricTxn><reference>")
+	tpl.WriteString(gatewayRef)
+	tpl.WriteString("</reference>")
+	tpl.WriteString("<method tx_status_u=\"accept\">threedsecure_authorization_request</method>")
+	tpl.WriteString("<pares_message>")
+	tpl.WriteString(debitPaRes)
+	tpl.WriteString("</pares_message>")
+	tpl.WriteString("</HistoricTxn></Transaction></Request>")
+	if Verbose {
+		log.Println("Sending ConfirmDebitTxn: ", tpl.String())
+	}
+	resp, err := http.Post(URL(), "application/xml", tpl)
+	if err != nil {
+		return nil, err
+	}
+	tpl.Truncate(0)
+	defer resp.Body.Close()
+	io.Copy(tpl, resp.Body)
+	if Verbose {
+		log.Println("XML RESPONSE", tpl.String())
+	}
+	tr := &TransactionResponse{}
+	err = xml.Unmarshal(tpl.Bytes(), tr)
+	return tr, err
+}
+
 func (t *Transaction) GetXML() *bytes.Buffer {
 	if t.skipLineItems && t.skipBillingDetails {
 		t.skipOrderDetails = true
