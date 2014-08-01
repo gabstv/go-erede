@@ -236,7 +236,7 @@ func FulFillTxn(gatewayReference, authcode string) string {
 	//return tr, err
 }
 
-func ConfirmDebitTxn(gatewayRef, debitPaRes string) (*TransactionResponse, error) {
+func ConfirmDebitTxn(gatewayRef, debitPaRes string, reqccbuf, respccbuf io.Writer) (*TransactionResponse, error) {
 	tpl := new(bytes.Buffer)
 	tpl.WriteString(`<Request version="2">`)
 	tpl.WriteString("<Authentication><AcquirerCode><rdcd_pv>")
@@ -255,6 +255,9 @@ func ConfirmDebitTxn(gatewayRef, debitPaRes string) (*TransactionResponse, error
 	if Verbose {
 		log.Println("Sending ConfirmDebitTxn: ", tpl.String())
 	}
+	if reqccbuf != nil {
+		reqccbuf.Write(tpl.Bytes())
+	}
 	resp, err := http.Post(URL(), "application/xml", tpl)
 	if err != nil {
 		return nil, err
@@ -264,6 +267,9 @@ func ConfirmDebitTxn(gatewayRef, debitPaRes string) (*TransactionResponse, error
 	io.Copy(tpl, resp.Body)
 	if Verbose {
 		log.Println("XML RESPONSE", tpl.String())
+	}
+	if respccbuf != nil {
+		respccbuf.Write(tpl.Bytes())
 	}
 	tr := &TransactionResponse{}
 	err = xml.Unmarshal(tpl.Bytes(), tr)
