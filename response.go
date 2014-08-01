@@ -33,8 +33,24 @@ const (
 	RStatCurrencyNotSupportedByCard = 59
 	RStatInvalidXML                 = 60
 	//TODO: fill more errors
+	// 3DS
+	RStat3DSPayerVerificationRequired = 150
+	RStat3DSInvalidTransactionType    = 151
+	RStat3DSManualAuthNotSupported    = 152
+	RStat3DSVerifyElmtMissing         = 153
+	RStat3DSInvalidVerifyValue        = 154
+	RStat3DSFieldMissing              = 155
+	RStat3DSInvalidBrowserDeviceCateg = 156
+	RStat3DSMerchantNotEnabled        = 157
+	RStat3DSSchemeNotSupported        = 158
+	RStat3DSVerificationFailed        = 159
+	RStat3DSInvalidIssuerResponse     = 160
+	RStat3DSAuthFailedCallCentre      = 161
+	RStat3DSCardNotEnrolled           = 162
+	//TODO: fill more errors
 	RStatPaymentGatewayBusy = 440
 	//TODO: fill more errors
+	RStat3DSRequired               = 471
 	RStatInvalidTransactionType    = 473
 	RStatInvalidValueForMerchantID = 480
 )
