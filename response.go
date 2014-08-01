@@ -65,21 +65,20 @@ const (
 )
 
 type TransactionResponse struct {
-	XMLName         xml.Name           `xml:"Response"`
-	Card            TrRespCard         `xml:"Card"`
-	CardTxn         TrRespCardTxn      `xml:"CardTxn"`
-	ThreeDSecure    TrRespThreeDSecure `xml:"ThreeDSecure"`
-	Acquirer        string             `xml:"acquirer"`
-	AuthHostRef     int                `xml:"auth_host_reference"`
-	GatewayRef      string             `xml:"gateway_reference"`
-	ExtendedRespMsg string             `xml:"extended_response_message"`
-	ExtendedStatus  string             `xml:"extended_status"`
-	MerchantRef     string             `xml:"merchant_reference"`
-	MID             string             `xml:"mid"`
-	Mode            string             `xml:"mode"`
-	Reason          string             `xml:"reason"`
-	Status          int                `xml:"status"`
-	Time            int64              `xml:"time"`
+	XMLName         xml.Name      `xml:"Response"`
+	Card            TrRespCard    `xml:"Card"`
+	CardTxn         TrRespCardTxn `xml:"CardTxn"`
+	Acquirer        string        `xml:"acquirer"`
+	AuthHostRef     int           `xml:"auth_host_reference"`
+	GatewayRef      string        `xml:"gateway_reference"`
+	ExtendedRespMsg string        `xml:"extended_response_message"`
+	ExtendedStatus  string        `xml:"extended_status"`
+	MerchantRef     string        `xml:"merchant_reference"`
+	MID             string        `xml:"mid"`
+	Mode            string        `xml:"mode"`
+	Reason          string        `xml:"reason"`
+	Status          int           `xml:"status"`
+	Time            int64         `xml:"time"`
 }
 
 //TODO: CHECK xid, aav, caavAlgorithm, eci
@@ -97,12 +96,13 @@ type TrRespCard struct {
 }
 
 type TrRespCardTxn struct {
-	AccType    string              `xml:"card_account_type"`
-	Cv2Avs     TrRespCardTxnCv2AVS `xml:"Cv2Avs"`
-	AuthCode   string              `xml:"authcode"`
-	CardScheme string              `xml:"card_scheme"`
-	Country    string              `xml:"country"`
-	Issuer     string              `xml:"issuer"`
+	AccType      string              `xml:"card_account_type"`
+	Cv2Avs       TrRespCardTxnCv2AVS `xml:"Cv2Avs"`
+	AuthCode     string              `xml:"authcode"`
+	CardScheme   string              `xml:"card_scheme"`
+	Country      string              `xml:"country"`
+	Issuer       string              `xml:"issuer"`
+	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure"`
 }
 
 type TrRespCardTxnCv2AVS struct {

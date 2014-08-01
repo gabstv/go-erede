@@ -238,7 +238,7 @@ func FulFillTxn(gatewayReference, authcode string) string {
 
 func ConfirmDebitTxn(gatewayRef, debitPaRes string) (*TransactionResponse, error) {
 	tpl := new(bytes.Buffer)
-	tpl.WriteString(`<Request version="2>`)
+	tpl.WriteString(`<Request version="2">`)
 	tpl.WriteString("<Authentication><AcquirerCode><rdcd_pv>")
 	tpl.WriteString(User)
 	tpl.WriteString("</rdcd_pv></AcquirerCode><password>")
