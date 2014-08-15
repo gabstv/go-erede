@@ -35,3 +35,13 @@ func NewDebitCardTransaction(cardNumber, cvc2, expiresMonth, expiresYear, orderI
 	t.skipRisk = true
 	return t
 }
+
+func NewBoletoTransaction(orderID string, moneyAmount float64, details TransactionBoletoInfo) *Transaction {
+	t := &Transaction{
+		OrderID:          orderID,
+		OrderMoneyAmount: moneyAmount,
+		OrderType:        "boleto",
+		BoletoInfo:       details,
+	}
+	return t
+}

@@ -65,20 +65,31 @@ const (
 )
 
 type TransactionResponse struct {
-	XMLName         xml.Name      `xml:"Response"`
-	Card            TrRespCard    `xml:"Card"`
-	CardTxn         TrRespCardTxn `xml:"CardTxn"`
-	Acquirer        string        `xml:"acquirer"`
-	AuthHostRef     int           `xml:"auth_host_reference"`
-	GatewayRef      string        `xml:"gateway_reference"`
-	ExtendedRespMsg string        `xml:"extended_response_message"`
-	ExtendedStatus  string        `xml:"extended_status"`
-	MerchantRef     string        `xml:"merchant_reference"`
-	MID             string        `xml:"mid"`
-	Mode            string        `xml:"mode"`
-	Reason          string        `xml:"reason"`
-	Status          int           `xml:"status"`
-	Time            int64         `xml:"time"`
+	XMLName         xml.Name        `xml:"Response"`
+	Card            TrRespCard      `xml:"Card"`
+	CardTxn         TrRespCardTxn   `xml:"CardTxn"`
+	BoletoTxn       TrRespBoletoTxn `xml:"BoletoTxn"`
+	Acquirer        string          `xml:"acquirer"`
+	AuthHostRef     int             `xml:"auth_host_reference"`
+	GatewayRef      string          `xml:"gateway_reference"`
+	ExtendedRespMsg string          `xml:"extended_response_message"`
+	ExtendedStatus  string          `xml:"extended_status"`
+	MerchantRef     string          `xml:"merchant_reference"`
+	MID             string          `xml:"mid"`
+	Mode            string          `xml:"mode"`
+	Reason          string          `xml:"reason"`
+	Status          int             `xml:"status"`
+	Time            int64           `xml:"time"`
+}
+
+type QueryResponse struct {
+	XMLName        xml.Name `xml:"Response"`
+	QueryTxnResult QueryResponseTxnResult
+}
+
+type QueryResponseTxnResult struct {
+	BoletoTxn TrRespBoletoTxn
+	CardTxn   TrRespCardTxn
 }
 
 //TODO: CHECK xid, aav, caavAlgorithm, eci
@@ -105,38 +116,70 @@ type TrRespCardTxn struct {
 	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure"`
 }
 
+type TrRespBoletoTxn struct {
+	Method        string `xml:"method"`
+	Language      string `xml:"language"`
+	Title         string `xml:"title"`
+	Country       string `xml:"country"`
+	URL           string `xml:"url"`
+	TxnStatus     string `xml:"txn_status"`
+	BarcodeNumber string `xml:"barcode_number"`
+	// query:
+	Amount            float64 `xml:"amount"`
+	BillingCity       string  `xml:"billing_city"`
+	BillingCountry    string  `xml:"billing_country"`
+	BillingPostcode   string  `xml:"billing_postcode"`
+	BillingStreet1    string  `xml:"billing_street1"`
+	BoletoNumber      string  `xml:"boleto_number"`
+	BoletoURL         string  `xml:"boleto_url"`
+	CustomerEmail     string  `xml:"customer_email"`
+	CustomerIP        string  `xml:"customer_ip"`
+	CustomerTelephone string  `xml:"customer_telephone"`
+	ExpiryDate        string  `xml:"expiry_date"`
+	FisrtName         string  `xml:"first_name"`
+	LastName          string  `xml:"last_name"`
+	Instructions      string  `xml:"instructions"`
+	InterestPerDay    float64 `xml:"interest_per_day"`
+	MerchantID        string  `xml:"merchant_id"`
+	OrderID           string  `xml:"order_id"`
+	OverdueFine       float64 `xml:"overdue_fine"`
+	PaymentStatus     string  `xml:"payment_status"`
+	ProcessorID       string  `xml:"processor_id"`
+	TransactionID     string  `xml:"transaction_id"`
+}
+
 type TrRespCardTxnCv2AVS struct {
 	Status string `xml:"cv2avs_status"`
 	Policy int    `xml:"policy"`
 }
 
-type TransactionResponse2 struct {
-	XMLName         xml.Name           `xml:"Response"`
-	QueryTxnResult  RespQueryTxnResult `xml:"QueryTxnResult"`
-	ExtendedRespMsg string             `xml:"extended_response_message"`
-	ExtendedStatus  string             `xml:"extended_status"`
-	Mode            string             `xml:"mode"`
-	Reason          string             `xml:"reason"`
-	Status          int                `xml:"status"`
-	Time            int64              `xml:"time"`
-}
-
-type RespQueryTxnResult struct {
-	Card                 TrRespCard2 `xml:"Card"`
-	Acquirer             string      `xml:"acquirer"`
-	AuthHostRef          int         `xml:"auth_host_reference"`
-	AuthCode             string      `xml:"authcode"`
-	GatewayRef           string      `xml:"gateway_reference"`
-	Environment          string      `xml:"environment"`
-	FulfillDate          string      `xml:"fulfill_date"`
-	FulfillTimestamp     int64       `xml:"fulfill_timestamp"`
-	MerchantRef          int         `xml:"merchant_reference"`
-	Reason               string      `xml:"reason"`
-	Sent                 string      `xml:"sent"`
-	Status               int         `xml:"status"`
-	TransactionDate      string      `xml:"transaction_date"`
-	TransactionTimestamp int64       `xml:"transaction_timestamp"`
-}
+// type TransactionResponse2 struct {
+// 	XMLName         xml.Name           `xml:"Response"`
+// 	QueryTxnResult  RespQueryTxnResult `xml:"QueryTxnResult"`
+// 	ExtendedRespMsg string             `xml:"extended_response_message"`
+// 	ExtendedStatus  string             `xml:"extended_status"`
+// 	Mode            string             `xml:"mode"`
+// 	Reason          string             `xml:"reason"`
+// 	Status          int                `xml:"status"`
+// 	Time            int64              `xml:"time"`
+// }
+//
+// type RespQueryTxnResult struct {
+// 	Card                 TrRespCard2 `xml:"Card"`
+// 	Acquirer             string      `xml:"acquirer"`
+// 	AuthHostRef          int         `xml:"auth_host_reference"`
+// 	AuthCode             string      `xml:"authcode"`
+// 	GatewayRef           string      `xml:"gateway_reference"`
+// 	Environment          string      `xml:"environment"`
+// 	FulfillDate          string      `xml:"fulfill_date"`
+// 	FulfillTimestamp     int64       `xml:"fulfill_timestamp"`
+// 	MerchantRef          int         `xml:"merchant_reference"`
+// 	Reason               string      `xml:"reason"`
+// 	Sent                 string      `xml:"sent"`
+// 	Status               int         `xml:"status"`
+// 	TransactionDate      string      `xml:"transaction_date"`
+// 	TransactionTimestamp int64       `xml:"transaction_timestamp"`
+// }
 
 type TrRespCard2 struct {
 	Category   string `xml:"card_category"`

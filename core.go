@@ -57,6 +57,7 @@ type Transaction struct {
 	Products            []TransactionProduct
 	Buyer               TransactionBuyer
 	DebitInfo           TransactionDebitInfo
+	BoletoInfo          TransactionBoletoInfo
 	ThreeDSecureData    ThreeDSecure
 	skipRisk            bool
 	threedSecure        bool
@@ -72,6 +73,21 @@ type TransactionDebitInfo struct {
 	DateTime    TransactionDateTime
 	Description string
 	URL         string
+}
+
+type TransactionBoletoInfo struct {
+	Email       string
+	Nome        string
+	Sobrenome   string
+	Endereco    string
+	Cidade      string
+	CEP         string
+	Telefone    string
+	JurosDiaPct float64
+	MultaPct    float64
+	Vencimento  TransactionDate
+	BancoID     string
+	Instrucoes  string
 }
 
 type ThreeDSecure struct {
@@ -276,7 +292,40 @@ func ConfirmDebitTxn(gatewayRef, debitPaRes string, reqccbuf, respccbuf io.Write
 	return tr, err
 }
 
+func (t *Transaction) getXMLBoleto() *bytes.Buffer {
+	vals := make(map[string]interface{}, 0)
+	vals["User"] = User
+	vals["Password"] = Password
+	fillif := func(key, val string) {
+		if len(val) > 0 {
+			vals[key] = val
+		}
+	}
+	fillif("BoletoNome", t.BoletoInfo.Nome)
+	fillif("BoletoSobrenome", t.BoletoInfo.Sobrenome)
+	fillif("BoletoEndereco", t.BoletoInfo.Endereco)
+	fillif("BoletoCidade", t.BoletoInfo.Cidade)
+	fillif("BoletoCEP", t.BoletoInfo.CEP)
+	fillif("BoletoTel", t.BoletoInfo.Telefone)
+	vals["BoletoJurosDia"] = fmt.Sprintf("%v", t.BoletoInfo.JurosDiaPct)
+	vals["BoletoMulta"] = fmt.Sprintf("%v", t.BoletoInfo.MultaPct)
+	vals["BoletoVencimento"] = t.BoletoInfo.Vencimento.String()
+	vals["BoletoBanco"] = t.BoletoInfo.BancoID
+	vals["BoletoInstrucoes"] = t.BoletoInfo.Instrucoes
+	vals["MReference"] = t.OrderID
+	vals["Amount"] = fmt.Sprintf("%v", t.OrderMoneyAmount)
+
+	tpl := template.New("xml")
+	tpl = template.Must(tpl.Parse(tpl_request_boleto))
+	buffer := new(bytes.Buffer)
+	tpl.Execute(buffer, vals)
+	return buffer
+}
+
 func (t *Transaction) GetXML() *bytes.Buffer {
+	if t.OrderType == "boleto" {
+		return t.getXMLBoleto()
+	}
 	if t.skipLineItems && t.skipBillingDetails {
 		t.skipOrderDetails = true
 	} else {

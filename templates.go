@@ -177,6 +177,39 @@ const tpl_request_dc = `<Request version="2">
 	{{end}}
 </Request>`
 
+const tpl_request_boleto = `<Request version="2">
+	<Authentication>
+		<AcquirerCode>
+			<rdcd_pv>{{.User}}</rdcd_pv>
+		</AcquirerCode>
+		<password>{{.Password}}</password>
+	</Authentication>
+	<Transaction>
+		<BoletoTxn>
+			<method>payment</method>
+			<customer_email>{{.BoletoEmail}}</customer_email>
+			<customer_ip>127.0.0.1</customer_ip>
+			<first_name>{{.BoletoNome}}</first_name>
+			<last_name>{{.BoletoSobrenome}}</last_name>
+			<billing_street1>{{.BoletoEndereco}}</billing_street1>
+			<billing_city>{{.BoletoCidade}}</billing_city>
+			<billing_postcode>{{.BoletoCEP}}</billing_postcode>
+			<billing_country>BR</billing_country>
+			<customer_telephone>{{.BoletoTel}}</customer_telephone>
+			<interest_per_day>{{.BoletoJurosDia}}</interest_per_day>
+			<overdue_fine>{{.BoletoMulta}}</overdue_fine>
+			<expiry_date>{{.BoletoVencimento}}</expiry_date>
+			<processor_id>{{.BoletoBanco}}</processor_id>
+			<instructions>{{.BoletoInstrucoes}}</instructions>
+		</BoletoTxn>
+		<TxnDetails>
+			<merchantreference>{{.MReference}}</merchantreference>
+			<amount currency="BRL">{{.Amount}}</amount>
+		</TxnDetails>
+	</Transaction><UserAgent><architecture version="2.6.32-5-686">i386-Linux</architecture><language vendor="Sun Microsystems Inc." version="20.1-b02" vm-name="Java HotSpot(TM) Client VM">Java</language>
+	<Libraries><lib version="">XMLDocument</lib></Libraries></UserAgent>
+</Request>`
+
 const tpl_fulfill = `<Request version="2">
 	<Authentication>
 		<AcquirerCode><rdcd_pv>{{.User}}</rdcd_pv></AcquirerCode>
