@@ -85,6 +85,10 @@ type TransactionResponse struct {
 type QueryResponse struct {
 	XMLName        xml.Name `xml:"Response"`
 	QueryTxnResult QueryResponseTxnResult
+	Mode           string `xml:"mode"`
+	Reason         string `xml:"reason"`
+	Status         int    `xml:"status"`
+	Time           int64  `xml:"time"`
 }
 
 type QueryResponseTxnResult struct {
