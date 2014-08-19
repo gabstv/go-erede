@@ -292,7 +292,7 @@ func ConfirmDebitTxn(gatewayRef, debitPaRes string, reqccbuf, respccbuf io.Write
 	return tr, err
 }
 
-func ConsultBoleto(gatewayRef string, reqccbuf, respccbuf io.Writer) (*TransactionResponse, error) {
+func ConsultBoleto(gatewayRef string, reqccbuf, respccbuf io.Writer) (*QueryResponse, error) {
 	tpl := new(bytes.Buffer)
 	tpl.WriteString(`<Request version="2">`)
 	tpl.WriteString("<Authentication><AcquirerCode><rdcd_pv>")
@@ -323,7 +323,7 @@ func ConsultBoleto(gatewayRef string, reqccbuf, respccbuf io.Writer) (*Transacti
 	if respccbuf != nil {
 		respccbuf.Write(tpl.Bytes())
 	}
-	tr := &TransactionResponse{}
+	tr := &QueryResponse{}
 	err = xml.Unmarshal(tpl.Bytes(), tr)
 	return tr, err
 }
