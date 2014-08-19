@@ -97,7 +97,7 @@ type QueryResponseTxnResult struct {
 	GatewayRef  string `xml:"gateway_reference"`
 	MerchantRef string `xml:"merchantreference"`
 	Reason      string `xml:"reason"`
-	Status      string `xml:"status"`
+	Status      int    `xml:"status"`
 }
 
 //TODO: CHECK xid, aav, caavAlgorithm, eci
