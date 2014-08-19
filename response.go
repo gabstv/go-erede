@@ -88,8 +88,12 @@ type QueryResponse struct {
 }
 
 type QueryResponseTxnResult struct {
-	BoletoTxn TrRespBoletoTxn
-	CardTxn   TrRespCardTxn
+	BoletoTxn   TrRespBoletoTxn
+	CardTxn     TrRespCardTxn
+	GatewayRef  string `xml:"gateway_reference"`
+	MerchantRef string `xml:"merchantreference"`
+	Reason      string `xml:"reason"`
+	Status      string `xml:"status"`
 }
 
 //TODO: CHECK xid, aav, caavAlgorithm, eci
