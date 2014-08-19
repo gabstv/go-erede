@@ -187,20 +187,20 @@ const tpl_request_boleto = `<Request version="2">
 	<Transaction>
 		<BoletoTxn>
 			<method>payment</method>
-			<customer_email>{{.BoletoEmail}}</customer_email>
+			{{if .BoletoEmail}}<customer_email>{{.BoletoEmail}}</customer_email>{{end}}
 			<customer_ip>127.0.0.1</customer_ip>
-			<first_name>{{.BoletoNome}}</first_name>
-			<last_name>{{.BoletoSobrenome}}</last_name>
-			<billing_street1>{{.BoletoEndereco}}</billing_street1>
-			<billing_city>{{.BoletoCidade}}</billing_city>
-			<billing_postcode>{{.BoletoCEP}}</billing_postcode>
+			{{if .BoletoNome}}<first_name>{{.BoletoNome}}</first_name>{{end}}
+			{{if .BoletoSobrenome}}<last_name>{{.BoletoSobrenome}}</last_name>{{end}}
+			{{if .BoletoEndereco}}<billing_street1>{{.BoletoEndereco}}</billing_street1>{{end}}
+			{{if .BoletoCidade}}<billing_city>{{.BoletoCidade}}</billing_city>{{end}}
+			{{if .BoletoCEP}}<billing_postcode>{{.BoletoCEP}}</billing_postcode>{{end}}
 			<billing_country>BR</billing_country>
-			<customer_telephone>{{.BoletoTel}}</customer_telephone>
+			{{if .BoletoTel}}<customer_telephone>{{.BoletoTel}}</customer_telephone>{{end}}
 			<interest_per_day>{{.BoletoJurosDia}}</interest_per_day>
 			<overdue_fine>{{.BoletoMulta}}</overdue_fine>
 			<expiry_date>{{.BoletoVencimento}}</expiry_date>
 			<processor_id>{{.BoletoBanco}}</processor_id>
-			<instructions>{{.BoletoInstrucoes}}</instructions>
+			{{if .BoletoInstrucoes}}<instructions>{{.BoletoInstrucoes}}</instructions>{{end}}
 		</BoletoTxn>
 		<TxnDetails>
 			<merchantreference>{{.MReference}}</merchantreference>
