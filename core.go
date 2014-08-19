@@ -521,5 +521,14 @@ func (t *TransactionDate) String() string {
 	if len(t.Year) < 1 || len(t.Month) < 1 || len(t.Day) < 1 {
 		return ""
 	}
+	for len(t.Year) < 4 {
+		t.Year = "0" + t.Year
+	}
+	for len(t.Month) < 2 {
+		t.Month = "0" + t.Month
+	}
+	for len(t.Day) < 2 {
+		t.Day = "0" + t.Day
+	}
 	return t.Year + "-" + t.Month + "-" + t.Day
 }
