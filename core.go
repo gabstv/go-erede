@@ -252,6 +252,50 @@ func FulFillTxn(gatewayReference, authcode string) string {
 	//return tr, err
 }
 
+func CancelTxn(gatewayRef string, reqccbuf, respccbuf io.Writer) (*QueryResponse, error) {
+	tpl := new(bytes.Buffer)
+	tpl.WriteString(`<Request version="2">`)
+	tpl.WriteString(`<Authentication>`)
+	tpl.WriteString(`<AcquirerCode><rdcd_pv>`)
+	tpl.WriteString(User)
+	tpl.WriteString(`</rdcd_pv></AcquirerCode>`)
+	tpl.WriteString(`<password>`)
+	tpl.WriteString(Password)
+	tpl.WriteString(`</password>`)
+	tpl.WriteString(`</Authentication>`)
+	tpl.WriteString(`<Transaction>`)
+	tpl.WriteString(`<HistoricTxn>`)
+	tpl.WriteString(`<reference>`)
+	tpl.WriteString(gatewayRef)
+	tpl.WriteString(`</reference>`)
+	tpl.WriteString(`<method>cancel</method>`)
+	tpl.WriteString(`</HistoricTxn>`)
+	tpl.WriteString(`</Transaction>`)
+	tpl.WriteString(`</Request>`)
+	if Verbose {
+		log.Println("Sending CancelTxn: ", tpl.String())
+	}
+	if reqccbuf != nil {
+		reqccbuf.Write(tpl.Bytes())
+	}
+	resp, err := http.Post(URL(), "application/xml", tpl)
+	if err != nil {
+		return nil, err
+	}
+	tpl.Truncate(0)
+	defer resp.Body.Close()
+	io.Copy(tpl, resp.Body)
+	if Verbose {
+		log.Println("XML RESPONSE", tpl.String())
+	}
+	if respccbuf != nil {
+		respccbuf.Write(tpl.Bytes())
+	}
+	tr := &QueryResponse{}
+	err = xml.Unmarshal(tpl.Bytes(), tr)
+	return tr, err
+}
+
 func ConfirmDebitTxn(gatewayRef, debitPaRes string, reqccbuf, respccbuf io.Writer) (*TransactionResponse, error) {
 	tpl := new(bytes.Buffer)
 	tpl.WriteString(`<Request version="2">`)
