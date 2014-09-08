@@ -252,6 +252,7 @@ func FulFillTxn(gatewayReference, authcode string) string {
 	//return tr, err
 }
 
+//TODO: test
 func CancelTxn(gatewayRef string, reqccbuf, respccbuf io.Writer) (*QueryResponse, error) {
 	tpl := new(bytes.Buffer)
 	tpl.WriteString(`<Request version="2">`)
