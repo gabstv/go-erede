@@ -22,6 +22,7 @@
 				<merchant_url>{{.ThreeDSecure.MerchantURL}}</merchant_url>
 				<purchase_desc>{{.ThreeDSecure.PurchaseDesc}}</purchase_desc>
 				<purchase_datetime>{{.ThreeDSecure.PurchaseDatetime}}</purchase_datetime>
+				{{if .ThreeDSecure.MobileNumber}}<mobile_number>{{.ThreeDSecure.MobileNumber}}</mobile_number>{{end}}
 				<Browser>
 					<device_category>0</device_category>
 					<accept_headers>*/*</accept_headers>
