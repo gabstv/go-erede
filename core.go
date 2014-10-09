@@ -497,10 +497,12 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 			MerchantURL      string
 			PurchaseDesc     string
 			PurchaseDatetime string
+			MobileNumber     string
 		}{
 			t.DebitInfo.URL,
 			t.DebitInfo.Description,
 			t.DebitInfo.DateTime.Sprint(),
+			t.ThreeDSecureData.MobileNumber,
 		}
 		tpl = template.Must(tpl.Parse(tpl_request_dc))
 	} else {
