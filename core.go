@@ -12,10 +12,14 @@ import (
 )
 
 var (
-	User        string
-	Password    string
+	// Deprecated: Use WebService.user
+	User string
+	// Deprecated: Use WebService.password
+	Password string
+	// Deprecated: Use WebService.environment
 	Environment = 1
-	Verbose     = false
+	// Deprecated: Use WebService.verbose
+	Verbose = false
 )
 
 const (
