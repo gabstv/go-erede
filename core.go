@@ -12,13 +12,13 @@ import (
 )
 
 var (
-	// Deprecated: Use WebService.user
+	// Deprecated: Use Webservice.user
 	User string
-	// Deprecated: Use WebService.password
+	// Deprecated: Use Webservice.password
 	Password string
-	// Deprecated: Use WebService.environment
+	// Deprecated: Use Webservice.environment
 	Environment = 1
-	// Deprecated: Use WebService.verbose
+	// Deprecated: Use Webservice.verbose
 	Verbose = false
 )
 
@@ -29,20 +29,25 @@ const (
 )
 
 const (
-	DevelopmentEnv = 0
-	ProductionEnv  = 1
+	DevelopmentEnv = 0 // deprecated
+	DEVELOPMENT    = 0
+	ProductionEnv  = 1 // deprecated
+	PRODUCTION     = 1
 )
 
+// Deprecated
 func SetProductionEnv() {
-	Environment = ProductionEnv
+	Environment = PRODUCTION
 }
 
+// Deprecated
 func SetDevelopmentEnv() {
-	Environment = DevelopmentEnv
+	Environment = DEVELOPMENT
 }
 
+// Deprecated
 func URL() string {
-	if Environment == ProductionEnv {
+	if Environment == PRODUCTION {
 		return URLPROD
 	}
 	return URLDEV
@@ -71,6 +76,7 @@ type Transaction struct {
 	skipOrderDetails    bool
 	skipLineItems       bool
 	location            string
+	ws                  *Webservice
 }
 
 type TransactionDebitInfo struct {
@@ -417,8 +423,14 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 		t.skipOrderDetails = false
 	}
 	vals := make(map[string]interface{}, 0)
-	vals["User"] = User
-	vals["Password"] = Password
+	if t.ws != nil {
+		vals["User"] = t.ws.user
+		vals["Password"] = t.ws.password
+	} else {
+		// DEPRECATED! will be removed soon
+		vals["User"] = User
+		vals["Password"] = Password
+	}
 	// <Transaction>
 	vals["CC"] = t.CardNumber
 	vals["ExpiryDate"] = t.CardExpiryDate.String()
@@ -519,12 +531,25 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 
 func (t *Transaction) Submit(xmlw ...io.Writer) (*TransactionResponse, error) {
 	buffer := t.GetXML()
-	if Verbose {
-		log.Println("XML TO SUBMIT")
-		log.Println(URL())
-		log.Println(buffer.String())
+	if t.ws == nil {
+		log.Println("[WARNING] Creating a transaction request directly is now deprecated. Please use an instance of Webservice to create transactions.")
 	}
-	resp, err := http.Post(URL(), "application/xml", buffer)
+	uri := URL()
+	if t.ws != nil {
+		uri = t.ws.URL()
+		if t.ws.verbose {
+			log.Println("XML TO SUBMIT")
+			log.Println(uri)
+			log.Println(buffer.String())
+		}
+	} else {
+		if Verbose {
+			log.Println("[DEPRECATED] XML TO SUBMIT")
+			log.Println(uri)
+			log.Println(buffer.String())
+		}
+	}
+	resp, err := http.Post(uri, "application/xml", buffer)
 	if err != nil {
 		return nil, err
 	}

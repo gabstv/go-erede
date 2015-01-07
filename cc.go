@@ -1,5 +1,6 @@
 package erede
 
+// Deprecated: Use Webservice.NewCreditCardTransaction
 func NewCreditCardTransaction(cardNumber, cvc2, expiresMonth, expiresYear, orderID string, moneyAmount float64) *Transaction {
 	if len(expiresYear) > 2 {
 		expiresYear = expiresYear[2:] // will become an issue after year 9999
@@ -16,6 +17,7 @@ func NewCreditCardTransaction(cardNumber, cvc2, expiresMonth, expiresYear, order
 	return t
 }
 
+// Deprecated: Use Webservice.NewDebitCardTransaction
 func NewDebitCardTransaction(cardNumber, cvc2, expiresMonth, expiresYear, orderID string, moneyAmount float64, debitDescription, debitStoreURL string) *Transaction {
 	if len(expiresYear) > 2 {
 		expiresYear = expiresYear[2:] // will become an issue after year 9999
@@ -36,6 +38,7 @@ func NewDebitCardTransaction(cardNumber, cvc2, expiresMonth, expiresYear, orderI
 	return t
 }
 
+// Deprecated: Use Webservice.NewBoletoTransaction
 func NewBoletoTransaction(orderID string, moneyAmount float64, details TransactionBoletoInfo) *Transaction {
 	t := &Transaction{
 		OrderID:          orderID,
