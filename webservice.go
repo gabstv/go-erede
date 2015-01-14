@@ -1,14 +1,20 @@
 package erede
 
+import (
+	"io"
+)
+
 type Webservice struct {
-	user        string
-	password    string
-	environment int
-	verbose     bool
+	user             string
+	password         string
+	environment      int
+	verbose          bool
+	XMLRequestLogger io.Writer
+	XMLResultLogger  io.Writer
 }
 
 func NewWebservice(user, pw string, env int) *Webservice {
-	return &Webservice{user, pw, env, false}
+	return &Webservice{user, pw, env, false, nil, nil}
 }
 
 func (ws *Webservice) URL() string {

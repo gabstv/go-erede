@@ -529,11 +529,20 @@ func (t *Transaction) GetXML() *bytes.Buffer {
 	return buffer
 }
 
+// xmlw is Deprecated. The parameter will be removed on the next version.
+// Please use ws.XMLRequestLogger instead.
 func (t *Transaction) Submit(xmlw ...io.Writer) (*TransactionResponse, error) {
 	buffer := t.GetXML()
 	if t.ws == nil {
 		log.Println("[WARNING] Creating a transaction request directly is now deprecated. Please use an instance of Webservice to create transactions.")
 	}
+
+	if t.ws != nil {
+		if t.ws.XMLRequestLogger != nil {
+			t.ws.XMLRequestLogger.Write(buffer.Bytes())
+		}
+	}
+
 	uri := URL()
 	if t.ws != nil {
 		uri = t.ws.URL()
@@ -561,9 +570,17 @@ func (t *Transaction) Submit(xmlw ...io.Writer) (*TransactionResponse, error) {
 	if Verbose {
 		log.Println(string(bs))
 	}
+
 	if len(xmlw) > 0 {
 		xmlw[0].Write(bs)
 	}
+
+	if t.ws != nil {
+		if t.ws.XMLResultLogger != nil {
+			t.ws.XMLResultLogger.Write(bs)
+		}
+	}
+
 	err = xml.Unmarshal(bs, tr)
 	return tr, err
 }
