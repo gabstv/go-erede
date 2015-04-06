@@ -77,4 +77,12 @@ func (ws *Webservice) NewBoletoTransaction(orderID string, moneyAmount float64, 
 	return t
 }
 
+func (ws *Webservice) NewQueryTransaction(gatewayref string) *QueryTx {
+	qtx := &QueryTx{
+		GatewayReference: gatewayref,
+	}
+	qtx.ws = ws
+	return qtx
+}
+
 //TODO: proper fulfill and pre methods

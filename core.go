@@ -79,6 +79,11 @@ type Transaction struct {
 	ws                  *Webservice
 }
 
+type QueryTx struct {
+	GatewayReference string //vTID
+	ws               *Webservice
+}
+
 type TransactionDebitInfo struct {
 	DateTime    TransactionDateTime
 	Description string
@@ -369,7 +374,7 @@ func ConsultBoleto(gatewayRef string, reqccbuf, respccbuf io.Writer) (*QueryResp
 	if err != nil {
 		return nil, err
 	}
-	tpl.Truncate(0)
+	tpl.Reset()
 	defer resp.Body.Close()
 	io.Copy(tpl, resp.Body)
 	if Verbose {
@@ -377,6 +382,42 @@ func ConsultBoleto(gatewayRef string, reqccbuf, respccbuf io.Writer) (*QueryResp
 	}
 	if respccbuf != nil {
 		respccbuf.Write(tpl.Bytes())
+	}
+	tr := &QueryResponse{}
+	err = xml.Unmarshal(tpl.Bytes(), tr)
+	return tr, err
+}
+
+func (qtx *QueryTx) Submit() (*QueryResponse, error) {
+	tpl := new(bytes.Buffer)
+	tpl.WriteString(`<Request version="2">`)
+	tpl.WriteString("<Authentication><AcquirerCode><rdcd_pv>")
+	tpl.WriteString(qtx.ws.user)
+	tpl.WriteString("</rdcd_pv></AcquirerCode><password>")
+	tpl.WriteString(qtx.ws.password)
+	tpl.WriteString("</password></Authentication>")
+	tpl.WriteString("<Transaction><HistoricTxn><reference>")
+	tpl.WriteString(qtx.GatewayReference)
+	tpl.WriteString("</reference>")
+	tpl.WriteString("<method>query</method></HistoricTxn></Transaction></Request>")
+	if qtx.ws.verbose {
+		log.Println("Sending QueryTx: " + tpl.String())
+	}
+	if qtx.ws.XMLRequestLogger != nil {
+		qtx.ws.XMLRequestLogger.Write(tpl.Bytes())
+	}
+	resp, err := http.Post(qtx.ws.URL(), "application/xml", tpl)
+	if err != nil {
+		return nil, err
+	}
+	tpl.Reset()
+	defer resp.Body.Close()
+	io.Copy(tpl, resp.Body)
+	if qtx.ws.verbose {
+		log.Println("QueryTx response:", tpl.String())
+	}
+	if qtx.ws.XMLResultLogger != nil {
+		qtx.ws.XMLResultLogger.Write(tpl.Bytes())
 	}
 	tr := &QueryResponse{}
 	err = xml.Unmarshal(tpl.Bytes(), tr)
