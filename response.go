@@ -92,12 +92,21 @@ type QueryResponse struct {
 }
 
 type QueryResponseTxnResult struct {
-	BoletoTxn   TrRespBoletoTxn
-	CardTxn     TrRespCardTxn
-	GatewayRef  string `xml:"gateway_reference"`
-	MerchantRef string `xml:"merchantreference"`
-	Reason      string `xml:"reason"`
-	Status      int    `xml:"status"`
+	BoletoTxn            TrRespBoletoTxn
+	CardTxn              TrRespCardTxn `xml:"Card"`                  //
+	Acquirer             string        `xml:"acquirer"`              //
+	AuthHostRef          int           `xml:"auth_host_reference"`   //
+	AuthCode             string        `xml:"authcode"`              //
+	Environment          string        `xml:"environment"`           //
+	FulfillDate          string        `xml:"fulfill_date"`          //
+	FulfillTimestamp     string        `xml:"fulfill_timestamp"`     //
+	TransactionDate      string        `xml:"transaction_date"`      //
+	TransactionTimestamp string        `xml:"transaction_timestamp"` //
+	Sent                 string        `xml:"sent"`                  //
+	GatewayRef           string        `xml:"gateway_reference"`     //
+	MerchantRef          string        `xml:"merchant_reference"`    //
+	Reason               string        `xml:"reason"`                //
+	Status               int           `xml:"status"`                //
 }
 
 //TODO: CHECK xid, aav, caavAlgorithm, eci
@@ -116,12 +125,14 @@ type TrRespCard struct {
 
 type TrRespCardTxn struct {
 	AccType      string              `xml:"card_account_type"`
+	CardCategory string              `xml:"card_category"`
 	Cv2Avs       TrRespCardTxnCv2AVS `xml:"Cv2Avs"`
-	AuthCode     string              `xml:"authcode"`
-	CardScheme   string              `xml:"card_scheme"`
+	CardScheme   string              `xml:"scheme"`
 	Country      string              `xml:"country"`
 	Issuer       string              `xml:"issuer"`
 	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure"`
+	ExpiryDate   string              `xml:"expirydate"` // mm/yy
+	PAN          string              `xml:"pan"`
 }
 
 type TrRespBoletoTxn struct {
