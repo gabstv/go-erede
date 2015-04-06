@@ -92,21 +92,21 @@ type QueryResponse struct {
 }
 
 type QueryResponseTxnResult struct {
-	BoletoTxn            TrRespBoletoTxn
-	CardTxn              TrRespCardTxn `xml:"Card"`                  //
-	Acquirer             string        `xml:"acquirer"`              //
-	AuthHostRef          int           `xml:"auth_host_reference"`   //
-	AuthCode             string        `xml:"authcode"`              //
-	Environment          string        `xml:"environment"`           //
-	FulfillDate          string        `xml:"fulfill_date"`          //
-	FulfillTimestamp     string        `xml:"fulfill_timestamp"`     //
-	TransactionDate      string        `xml:"transaction_date"`      //
-	TransactionTimestamp string        `xml:"transaction_timestamp"` //
-	Sent                 string        `xml:"sent"`                  //
-	GatewayRef           string        `xml:"gateway_reference"`     //
-	MerchantRef          string        `xml:"merchant_reference"`    //
-	Reason               string        `xml:"reason"`                //
-	Status               int           `xml:"status"`                //
+	BoletoTxn            TrRespBoletoTxn `xml:"BoletoTxn,omitempty" json:",omitempty"`
+	CardTxn              TrRespCardTxn   `xml:"Card,omitempty" json:",omitempty"` //
+	Acquirer             string          `xml:"acquirer"`                         //
+	AuthHostRef          int             `xml:"auth_host_reference"`              //
+	AuthCode             string          `xml:"authcode"`                         //
+	Environment          string          `xml:"environment"`                      //
+	FulfillDate          string          `xml:"fulfill_date"`                     //
+	FulfillTimestamp     string          `xml:"fulfill_timestamp"`                //
+	TransactionDate      string          `xml:"transaction_date"`                 //
+	TransactionTimestamp string          `xml:"transaction_timestamp"`            //
+	Sent                 string          `xml:"sent"`                             //
+	GatewayRef           string          `xml:"gateway_reference"`                //
+	MerchantRef          string          `xml:"merchant_reference"`               //
+	Reason               string          `xml:"reason"`                           //
+	Status               int             `xml:"status"`                           //
 }
 
 //TODO: CHECK xid, aav, caavAlgorithm, eci
@@ -126,11 +126,11 @@ type TrRespCard struct {
 type TrRespCardTxn struct {
 	AccType      string              `xml:"card_account_type"`
 	CardCategory string              `xml:"card_category"`
-	Cv2Avs       TrRespCardTxnCv2AVS `xml:"Cv2Avs"`
+	Cv2Avs       TrRespCardTxnCv2AVS `xml:"Cv2Avs" json:",omitempty"`
 	CardScheme   string              `xml:"scheme"`
 	Country      string              `xml:"country"`
 	Issuer       string              `xml:"issuer"`
-	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure"`
+	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure,omitempty" json:",omitempty"`
 	ExpiryDate   string              `xml:"expirydate"` // mm/yy
 	PAN          string              `xml:"pan"`
 	AuthCode     string              `xml:"authcode"` // não é NSU!
