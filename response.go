@@ -133,6 +133,7 @@ type TrRespCardTxn struct {
 	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure"`
 	ExpiryDate   string              `xml:"expirydate"` // mm/yy
 	PAN          string              `xml:"pan"`
+	AuthCode     string              `xml:"authcode"` // não é NSU!
 }
 
 type TrRespBoletoTxn struct {
