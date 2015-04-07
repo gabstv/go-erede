@@ -3,6 +3,7 @@ package erede
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -80,8 +81,9 @@ type Transaction struct {
 }
 
 type QueryTx struct {
-	GatewayReference string //vTID
-	ws               *Webservice
+	GatewayReference  string //vTID
+	MerchantReference string
+	ws                *Webservice
 }
 
 type TransactionDebitInfo struct {
@@ -396,8 +398,13 @@ func (qtx *QueryTx) Submit() (*QueryResponse, error) {
 	tpl.WriteString("</rdcd_pv></AcquirerCode><password>")
 	tpl.WriteString(qtx.ws.password)
 	tpl.WriteString("</password></Authentication>")
-	tpl.WriteString("<Transaction><HistoricTxn><reference>")
-	tpl.WriteString(qtx.GatewayReference)
+	if len(qtx.GatewayReference) < 1 {
+		tpl.WriteString("<Transaction><HistoricTxn><reference type=\"merchant\">")
+		tpl.WriteString(qtx.MerchantReference)
+	} else {
+		tpl.WriteString("<Transaction><HistoricTxn><reference>")
+		tpl.WriteString(qtx.GatewayReference)
+	}
 	tpl.WriteString("</reference>")
 	tpl.WriteString("<method>query</method></HistoricTxn></Transaction></Request>")
 	if qtx.ws.verbose {
@@ -409,6 +416,12 @@ func (qtx *QueryTx) Submit() (*QueryResponse, error) {
 	resp, err := http.Post(qtx.ws.URL(), "application/xml", tpl)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		if qtx.ws.verbose {
+			log.Println("[erede] HTTP STATUS CODE", resp.StatusCode, resp.Status)
+		}
+		return nil, errors.New("INTERNAL_SERVER_ERROR")
 	}
 	tpl.Reset()
 	defer resp.Body.Close()
@@ -602,6 +615,12 @@ func (t *Transaction) Submit(xmlw ...io.Writer) (*TransactionResponse, error) {
 	resp, err := http.Post(uri, "application/xml", buffer)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		if Verbose {
+			log.Println("[erede] HTTP STATUS CODE", resp.StatusCode, resp.Status)
+		}
+		return nil, errors.New("INTERNAL_SERVER_ERROR")
 	}
 	tr := &TransactionResponse{}
 	buffer.Truncate(0)
