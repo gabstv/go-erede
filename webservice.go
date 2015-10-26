@@ -1,7 +1,11 @@
 package erede
 
 import (
+	"bytes"
+	"encoding/xml"
 	"io"
+	"log"
+	"net/http"
 )
 
 type Webservice struct {
@@ -75,6 +79,42 @@ func (ws *Webservice) NewBoletoTransaction(orderID string, moneyAmount float64, 
 	}
 	t.ws = ws
 	return t
+}
+
+func (ws *Webservice) ConsultBoleto(gatewayRef string, reqccbuf, respccbuf io.Writer) (*QueryResponse, error) {
+	tpl := new(bytes.Buffer)
+	tpl.WriteString(`<Request version="2">`)
+	tpl.WriteString("<Authentication><AcquirerCode><rdcd_pv>")
+	tpl.WriteString(ws.user)
+	tpl.WriteString("</rdcd_pv></AcquirerCode><password>")
+	tpl.WriteString(ws.password)
+	tpl.WriteString("</password></Authentication>")
+	tpl.WriteString("<Transaction><HistoricTxn><reference>")
+	tpl.WriteString(gatewayRef)
+	tpl.WriteString("</reference>")
+	tpl.WriteString("<method>query</method></HistoricTxn></Transaction></Request>")
+	if Verbose {
+		log.Println("Sending ConsultBoleto: ", tpl.String())
+	}
+	if reqccbuf != nil {
+		reqccbuf.Write(tpl.Bytes())
+	}
+	resp, err := http.Post(URL(), "application/xml", tpl)
+	if err != nil {
+		return nil, err
+	}
+	tpl.Reset()
+	defer resp.Body.Close()
+	io.Copy(tpl, resp.Body)
+	if Verbose {
+		log.Println("XML RESPONSE", tpl.String())
+	}
+	if respccbuf != nil {
+		respccbuf.Write(tpl.Bytes())
+	}
+	tr := &QueryResponse{}
+	err = xml.Unmarshal(tpl.Bytes(), tr)
+	return tr, err
 }
 
 func (ws *Webservice) NewQueryTransaction(gatewayref string) *QueryTx {
