@@ -439,8 +439,13 @@ func (qtx *QueryTx) Submit() (*QueryResponse, error) {
 
 func (t *Transaction) getXMLBoleto() *bytes.Buffer {
 	vals := make(map[string]interface{}, 0)
-	vals["User"] = User
-	vals["Password"] = Password
+	if t.ws != nil {
+		vals["User"] = t.ws.user
+		vals["Password"] = t.ws.password
+	} else {
+		vals["User"] = User
+		vals["Password"] = Password
+	}
 	fillif := func(key, val string) {
 		if len(val) > 0 {
 			vals[key] = val
