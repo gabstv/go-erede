@@ -127,7 +127,7 @@ type TrRespCardTxn struct {
 	AccType      string              `xml:"card_account_type"`
 	CardCategory string              `xml:"card_category"`
 	Cv2Avs       TrRespCardTxnCv2AVS `xml:"Cv2Avs" json:",omitempty"`
-	CardScheme   string              `xml:"scheme"`
+	CardScheme   string              `xml:"card_scheme"`
 	Country      string              `xml:"country"`
 	Issuer       string              `xml:"issuer"`
 	ThreeDSecure TrRespThreeDSecure  `xml:"ThreeDSecure,omitempty" json:",omitempty"`
